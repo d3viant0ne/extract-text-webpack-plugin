@@ -1,13 +1,13 @@
-var fs = require("fs");
-var vm = require("vm");
-var path = require("path");
-var webpack = require("webpack");
-var should = require("should");
-var ExtractTextPlugin = require("../");
+/* eslint-disable */
+import fs from "fs";
+import vm from "vm";
+import path from "path";
+import webpack from "webpack";
+import ExtractTextPlugin from '../src';
 
 var cases = process.env.CASES ? process.env.CASES.split(",") : fs.readdirSync(path.join(__dirname, "cases"));
 
-describe("TestCases", function() {
+describe("Webpack Integration Tests", function() {
 	cases.forEach(function(testCase) {
 		it(testCase, function(done) {
 			var testDirectory = path.join(__dirname, "cases", testCase);
@@ -34,11 +34,10 @@ describe("TestCases", function() {
 					require(testFile)(suite);
 				var expectedDirectory = path.join(testDirectory, "expected");
 				fs.readdirSync(expectedDirectory).forEach(function(file) {
-					var filePath = path.join(expectedDirectory, file);
+          var filePath = path.join(expectedDirectory, file);
 					var actualPath = path.join(outputDirectory, file);
-					readFileOrEmpty(actualPath).should.be.eql(
-						readFileOrEmpty(filePath),
-						file + " should be correct");
+          expect(readFileOrEmpty(actualPath)).toEqual(readFileOrEmpty(filePath));
+          expect(readFileOrEmpty(actualPath)).toMatchSnapshot();
 				});
 				done();
 			});
